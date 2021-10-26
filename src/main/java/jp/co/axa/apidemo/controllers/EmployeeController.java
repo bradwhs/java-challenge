@@ -3,6 +3,7 @@ package jp.co.axa.apidemo.controllers;
 import jp.co.axa.apidemo.entities.Employee;
 import jp.co.axa.apidemo.services.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,12 +19,16 @@ public class EmployeeController {
         this.employeeService = employeeService;
     }
 
+    // Cache get all employees
+    @Cacheable(value="employee-cache-all", key="#root.method.name")
     @GetMapping("/employees")
     public List<Employee> getEmployees() {
         List<Employee> employees = employeeService.retrieveEmployees();
         return employees;
     }
 
+    // Cache getEmployee by ID
+    @Cacheable(value="employee-cache", key="'EmployeeCache'+#employeeId")
     @GetMapping("/employees/{employeeId}")
     public Employee getEmployee(@PathVariable(name="employeeId")Long employeeId) {
         return employeeService.getEmployee(employeeId);
