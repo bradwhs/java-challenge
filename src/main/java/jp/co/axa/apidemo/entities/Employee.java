@@ -14,6 +14,14 @@ import javax.persistence.Table;
 @Table(name="EMPLOYEE")
 public class Employee {
 
+    public Employee(){}
+
+    public Employee(String name, Integer salary, String department) {
+        this.name = name;
+        this.salary = salary;
+        this.department = department;
+    }
+
     @Getter
     @Setter
     @Id

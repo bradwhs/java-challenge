@@ -2,6 +2,7 @@ package jp.co.axa.apidemo.services;
 
 import jp.co.axa.apidemo.entities.Employee;
 import jp.co.axa.apidemo.repositories.EmployeeRepository;
+import jp.co.axa.apidemo.exceptions.EmployeeNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,9 @@ public class EmployeeServiceImpl implements EmployeeService{
 
     public Employee getEmployee(Long employeeId) {
         Optional<Employee> optEmp = employeeRepository.findById(employeeId);
+        if (!optEmp.isPresent()) {
+            throw new EmployeeNotFoundException(employeeId);
+        }
         return optEmp.get();
     }
 
@@ -33,10 +37,17 @@ public class EmployeeServiceImpl implements EmployeeService{
     }
 
     public void deleteEmployee(Long employeeId){
-        employeeRepository.deleteById(employeeId);
+        try {
+            employeeRepository.deleteById(employeeId);
+        } catch (Exception e) {
+            throw new EmployeeNotFoundException(employeeId);
+        }
     }
 
-    public void updateEmployee(Employee employee) {
-        employeeRepository.save(employee);
+    public void updateEmployee(Employee emp, Employee employee) {
+        emp.setName(employee.getName());
+        emp.setSalary(employee.getSalary());
+        emp.setDepartment(employee.getDepartment());
+        employeeRepository.save(emp);
     }
 }
