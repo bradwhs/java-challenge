@@ -32,6 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // redirect to /login page otherwise
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.headers().frameOptions().disable();
         http.authorizeRequests()
         .antMatchers("/api/v1/employees").authenticated()
         .antMatchers("/api/v1/employees/**").authenticated()
